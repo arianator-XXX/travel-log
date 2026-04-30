@@ -1,58 +1,70 @@
 import { createClient } from '@supabase/supabase-js';
 
-// Supabaseとの接続設定
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
 export default async function Home() {
-  // あなたのデータベース名に合わせて 'trip' に戻しました
   const { data: trips, error } = await supabase
     .from('trip') 
     .select('*')
     .order('date', { ascending: false });
 
-  if (error) return <div>エラーが発生しました: {error.message}</div>;
+  if (error) return <div className="text-white p-10">エラーが発生しました: {error.message}</div>;
 
   return (
-    <main className="p-10 bg-gray-50 min-h-screen">
-      <h1 className="text-3xl font-bold mb-8 text-center text-gray-800">俺の旅行記 DB連携版</h1>
+    // 背景を深いネイビーのグラデーションに
+    <main className="p-6 md:p-12 bg-slate-950 min-h-screen text-slate-100 font-sans">
       
-      <div className="max-w-xl mx-auto space-y-6">
+      {/* タイトルに光彩エフェクト */}
+      <h1 className="text-4xl md:text-5xl font-extrabold mb-12 text-center tracking-tight">
+        <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-emerald-400">
+          MY TRAVEL LOG
+        </span>
+      </h1>
+      
+      <div className="max-w-2xl mx-auto space-y-10">
         {trips?.map((trip) => (
-          <div key={trip.id} className="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
+          <div key={trip.id} className="group relative bg-slate-900/50 backdrop-blur-xl rounded-3xl border border-slate-800 overflow-hidden hover:border-blue-500/50 transition-all duration-500 shadow-2xl">
             
-            {/* 写真を表示する設定。tripテーブルに image_url という列が必要です */}
-            // app/page.tsx の中の画像タグを探して書き換えます
-
-{trip.image_url && (
-  <div className="w-full bg-gray-100"> {/* 背景色をつけて、写真が小さい場合も綺麗に見せる */}
-    <img 
-      src={trip.image_url} 
-      alt={trip.location} 
-      className="w-full h-auto object-contain max-h-[400px] mx-auto" 
-      // ↑ 解説：
-      // h-auto: 縦幅は自動（切れない）
-      // object-contain: 枠内に全体を収める
-      // max-h-[400px]: 縦に長くなりすぎないように上限を決める
-      // mx-auto: 中央寄せ
-    />
-  </div>
-)}
-
-            <div className="p-5">
-              <div className="flex justify-between items-start mb-2">
-                <h2 className="text-xl font-bold text-blue-600">{trip.location}</h2>
-                <span className="text-sm text-gray-400 font-mono">{trip.date}</span>
+            {/* 写真エリア：アスペクト比を維持しつつ綺麗に見せる */}
+            {trip.image_url && (
+              <div className="w-full bg-slate-800 flex items-center justify-center overflow-hidden">
+                <img 
+                  src={trip.image_url} 
+                  alt={trip.location} 
+                  className="w-full h-auto max-h-[500px] object-contain group-hover:scale-105 transition-transform duration-700" 
+                />
               </div>
-              <p className="text-gray-700 leading-relaxed">{trip.comment}</p>
+            )}
+
+            <div className="p-8">
+              <div className="flex justify-between items-end mb-4">
+                <div>
+                  <p className="text-blue-400 text-xs font-bold uppercase tracking-widest mb-1">Destination</p>
+                  <h2 className="text-2xl font-bold text-white group-hover:text-blue-400 transition-colors">
+                    {trip.location}
+                  </h2>
+                </div>
+                <span className="text-sm text-slate-500 font-mono bg-slate-800 px-3 py-1 rounded-full">
+                  {trip.date}
+                </span>
+              </div>
+              
+              <div className="h-px w-full bg-gradient-to-r from-slate-800 via-slate-700 to-slate-800 mb-4" />
+              
+              <p className="text-slate-300 text-lg leading-relaxed italic">
+                "{trip.comment}"
+              </p>
             </div>
           </div>
         ))}
         
         {trips?.length === 0 && (
-          <p className="text-center text-gray-500">まだデータがないよ。SupabaseでInsertしてみて！</p>
+          <div className="text-center p-20 border-2 border-dashed border-slate-800 rounded-3xl">
+            <p className="text-slate-500">まだ旅の記録がありません。冒険に出かけましょう！</p>
+          </div>
         )}
       </div>
     </main>
