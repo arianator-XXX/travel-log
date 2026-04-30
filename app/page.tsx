@@ -7,9 +7,9 @@ const supabase = createClient(
 );
 
 export default async function Home() {
-  // DBの 'trips' テーブルからデータを取ってくる（sを付けました！）
-  const { data: trip, error } = await supabase
-    .from('trips') 
+  // あなたのデータベース名に合わせて 'trip' に戻しました
+  const { data: trips, error } = await supabase
+    .from('trip') 
     .select('*')
     .order('date', { ascending: false });
 
@@ -20,10 +20,10 @@ export default async function Home() {
       <h1 className="text-3xl font-bold mb-8 text-center text-gray-800">俺の旅行記 DB連携版</h1>
       
       <div className="max-w-xl mx-auto space-y-6">
-        {trip?.map((trip) => (
+        {trips?.map((trip) => (
           <div key={trip.id} className="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
             
-            {/* 【ここを追加！】写真があれば表示する設定 */}
+            {/* 写真を表示する設定。tripテーブルに image_url という列が必要です */}
             {trip.image_url && (
               <img 
                 src={trip.image_url} 
@@ -42,7 +42,7 @@ export default async function Home() {
           </div>
         ))}
         
-        {trip?.length === 0 && (
+        {trips?.length === 0 && (
           <p className="text-center text-gray-500">まだデータがないよ。SupabaseでInsertしてみて！</p>
         )}
       </div>
