@@ -1,5 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
-import Spline from '@splinetool/react-spline/next'; // Splineを読み込む
+// 修正前：import Spline from '@splinetool/react-spline/next';
+// 修正後：
+import Spline from '@splinetool/react-spline';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
