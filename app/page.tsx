@@ -24,13 +24,22 @@ export default async function Home() {
           <div key={trip.id} className="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
             
             {/* 写真を表示する設定。tripテーブルに image_url という列が必要です */}
-            {trip.image_url && (
-              <img 
-                src={trip.image_url} 
-                alt={trip.location} 
-                className="w-full h-64 object-cover" 
-              />
-            )}
+            // app/page.tsx の中の画像タグを探して書き換えます
+
+{trip.image_url && (
+  <div className="w-full bg-gray-100"> {/* 背景色をつけて、写真が小さい場合も綺麗に見せる */}
+    <img 
+      src={trip.image_url} 
+      alt={trip.location} 
+      className="w-full h-auto object-contain max-h-[400px] mx-auto" 
+      // ↑ 解説：
+      // h-auto: 縦幅は自動（切れない）
+      // object-contain: 枠内に全体を収める
+      // max-h-[400px]: 縦に長くなりすぎないように上限を決める
+      // mx-auto: 中央寄せ
+    />
+  </div>
+)}
 
             <div className="p-5">
               <div className="flex justify-between items-start mb-2">
